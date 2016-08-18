@@ -1,0 +1,5 @@
+name: Dartgame
+dependencies:
+  dart_to_js_script_rewriter:
+transformers:
+- dart_to_js_script_rewriter
