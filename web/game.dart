@@ -20,6 +20,8 @@ part 'vector_math.dart';
 
 part 'target_spawner.dart';
 
+part 'particle.dart';
+
 class Game {
     final CanvasElement _canvas;
     final Keyboard _keyboard = new Keyboard();
@@ -28,6 +30,7 @@ class Game {
     final _dartStartY = 300;
 
     var targetSpawner = new TargetSpawner(100, 500);
+    var particles = new List<Particle>();
 
     var _aimArc = new AimArc(40, 300, 50);
     var _dart;
@@ -84,6 +87,10 @@ class Game {
 
         _dart.update(elapsed, gravity, airResistance);
 
+        for (var particle in particles) {
+            particle.update(elapsed);
+        }
+
         // Spawn new targets; is creating a new list every time too inefficient?
         _targets = new List.from(_targets)
             ..addAll(targetSpawner.spawnTargetsIfTime(elapsed));
@@ -99,12 +106,12 @@ class Game {
 
         // iterate over indices to remove in reverse order
         // so removing elements doesn't change indices for later removals
-        window.alert("$indicesToRemove.length -1");
         for (int i = indicesToRemove.length - 1; i >= 0; i--) {
-            _targets.removeAt(i);
+            num j = indicesToRemove[i];
+            if (_targets[j].hit) particles = new List.from(particles)
+                ..addAll(getParticlesForTarget(_targets[j], _dart));
+            _targets.removeAt(j);
         }
-        window.alert("wat");
-
 
         if (_charging) {
             _powerCharge += _chargeRate * elapsed;
@@ -154,10 +161,14 @@ class Game {
             ..fill();
 
         for (var target in _targets) {
-            target._render(context);
+            target.render(context);
         }
 
-        _aimArc._renderAimAlongArc(_mouse.mouseY, _dartStartY, _canvas.height, context);
+        for (var particle in particles) {
+            particle.render(context);
+        }
+
+        _aimArc.renderAimAlongArc(_mouse.mouseY, _dartStartY, _canvas.height, context);
         _renderPowerMeter(context);
     }
 

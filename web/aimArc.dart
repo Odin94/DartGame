@@ -6,7 +6,7 @@ class AimArc {
 
     AimArc(this._centerX, this._centerY, this._r);
 
-    void _renderAimAlongArc(mouseY, dartY, canvasHeight, context) {
+    void renderAimAlongArc(mouseY, dartY, canvasHeight, context) {
         num mappedMouseY = _mapMouseYToPi(mouseY, dartY, canvasHeight);
 
         posX = _r * cos(mappedMouseY) + _centerX;

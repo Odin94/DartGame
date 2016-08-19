@@ -20,6 +20,8 @@ class Target {
         remainingLifetime = _originalLifetime;
     }
 
+    num get size => _w * _h;
+
     void update(Dart dart, num elapsed) {
         if (_checkCollision(dart)) hit = true;
         _shrink(elapsed);
@@ -52,7 +54,7 @@ class Target {
         _y = _originalY + (_originalH - _h) / 2;
     }
 
-    void _render(context) {
+    void render(context) {
         context
             ..globalAlpha = 1
             ..fillStyle = "red"

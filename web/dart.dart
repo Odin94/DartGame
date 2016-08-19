@@ -18,7 +18,6 @@ class Dart {
             _velY = vel_y;
 
             wasThrown = true;
-            print("thrown!");
         }
     }
 
@@ -36,6 +35,8 @@ class Dart {
 
     void _updateVelocity(num elapsed, num gravity, num airResistance) {
         _velX -= airResistance * elapsed;
+        if (_velX < 0) _velX = 0;
+
         _velY += gravity * elapsed;
     }
 }
