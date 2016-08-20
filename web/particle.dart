@@ -5,11 +5,9 @@ const num _minParticleVelX = 100,
     _minParticleVelY = -400,
     _maxParticleVelY = 400;
 
-num _particleSize = 2;
+num _maxParticleSize = 4;
 
 List<Particle> getParticlesForTarget(Target target, Dart dart) {
-    var rnd = new Random();
-
     int particleCountMax = (target.size / 10).round();
     int particleCountMin = (target.size / 20).round();
     int particleCount = particleCountMin + rnd.nextInt(particleCountMax - particleCountMin);
@@ -21,24 +19,36 @@ List<Particle> getParticlesForTarget(Target target, Dart dart) {
     var particles = new List<Particle>();
     for (int i = 0; i < particleCount; i++) {
         particles.add(
-            new Particle(target._x, target._y, minParticleVelY: minParticleVelY, maxParticleVelY: maxParticleVelY));
+            new Particle(
+                target._x, target._x + target._w, target._y, target._y + target._h, minParticleVelY: minParticleVelY,
+                maxParticleVelY: maxParticleVelY));
     }
 
     return particles;
 }
 
 class Particle {
-    num _x, _y, _velX, _velY;
+    num _x, _y, _velX, _velY, _size;
+    bool outOfScreen = false;
 
-    Particle(this._x, this._y, {minParticleVelY: _minParticleVelY, maxParticleVelY: _maxParticleVelY}) {
-        var rnd = new Random();
+    Particle(num minX, num maxX, num minY, num maxY,
+        {minParticleVelY: _minParticleVelY, maxParticleVelY: _maxParticleVelY}) {
+        _x = minX + rnd.nextInt((maxX - minX).round());
+        _y = minY + rnd.nextInt((maxY - minY).round());
+
         _velX = _minParticleVelX + rnd.nextInt(_maxParticleVelX - _minParticleVelX);
         _velY = minParticleVelY + rnd.nextInt(maxParticleVelY - minParticleVelY);
+
+        _size = 1 + rnd.nextInt(_maxParticleSize - 1);
     }
 
     void update(num elapsed) {
         _x += _velX * elapsed;
         _y += _velY * elapsed;
+
+        if (_x > 800 || _x < 0 || _y > 600 || _y < 0) {
+            outOfScreen = true;
+        }
     }
 
     void render(context) {
@@ -46,7 +56,7 @@ class Particle {
             ..globalAlpha = 1
             ..fillStyle = "red"
             ..beginPath()
-            ..rect(_x, _y, _particleSize, _particleSize)
+            ..rect(_x, _y, _size, _size)
             ..fill();
     }
 }

@@ -12,6 +12,8 @@ part 'mouse.dart';
 
 part 'dart.dart';
 
+part 'dart_reloader.dart';
+
 part 'target.dart';
 
 part 'aimArc.dart';
@@ -22,10 +24,16 @@ part 'target_spawner.dart';
 
 part 'particle.dart';
 
+part 'score_text.dart';
+
+Random rnd = new Random();
+
 class Game {
     final CanvasElement _canvas;
     final Keyboard _keyboard = new Keyboard();
     final Mouse _mouse = new Mouse();
+
+    var scoreText = new ScoreText();
 
     final _dartStartY = 300;
 
@@ -90,6 +98,11 @@ class Game {
         for (var particle in particles) {
             particle.update(elapsed);
         }
+        for (int i = particles.length - 1; i >= 0; i--) {
+            if (particles[i].outOfScreen) {
+                particles.removeAt(i);
+            }
+        }
 
         // Spawn new targets; is creating a new list every time too inefficient?
         _targets = new List.from(_targets)
@@ -108,15 +121,24 @@ class Game {
         // so removing elements doesn't change indices for later removals
         for (int i = indicesToRemove.length - 1; i >= 0; i--) {
             num j = indicesToRemove[i];
-            if (_targets[j].hit) particles = new List.from(particles)
-                ..addAll(getParticlesForTarget(_targets[j], _dart));
+            if (_targets[j].hit) _onTargetHit(_targets[j]);
             _targets.removeAt(j);
         }
+
+        scoreText.update(elapsed);
 
         if (_charging) {
             _powerCharge += _chargeRate * elapsed;
             _powerCharge %= _chargeCap;
         }
+    }
+
+    void _onTargetHit(var target) {
+        particles = new List.from(particles)
+            ..addAll(getParticlesForTarget(target, _dart));
+
+        _dart.onTargetHit();
+        scoreText.onHitTarget(target, _dart);
     }
 
     void _handleMouseKey(MouseKey k) {
@@ -159,6 +181,8 @@ class Game {
             ..fillStyle = "black"
             ..arc(_dart._x, _dart._y, _dart._r, 0, PI * 2.0)
             ..fill();
+
+        scoreText.render(context);
 
         for (var target in _targets) {
             target.render(context);

@@ -8,6 +8,8 @@ class Dart {
     num _velX = 0;
     num _velY = 0;
 
+    num hitTargets = 0;
+
     bool wasThrown = false;
 
     Dart(this._x, this._y, this._r);
@@ -26,6 +28,10 @@ class Dart {
             _move(elapsed);
             _updateVelocity(elapsed, gravity, airResistance);
         }
+    }
+
+    void onTargetHit() {
+        hitTargets++;
     }
 
     void _move(num elapsed) {
