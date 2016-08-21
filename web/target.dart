@@ -10,6 +10,7 @@ class Target {
     num remainingLifetime;
 
     bool hit = false;
+    Dart hittingDart = null;
 
     Target(this._originalX, this._originalY, this._originalW, this._originalH, this._originalLifetime) {
         _x = _originalX;
@@ -22,8 +23,14 @@ class Target {
 
     num get size => _w * _h;
 
-    void update(Dart dart, num elapsed) {
-        if (_checkCollision(dart)) hit = true;
+    void update(List<Dart> darts, num elapsed) {
+        for (Dart dart in darts) {
+            if (_checkCollision(dart)) {
+                hit = true;
+                hittingDart = dart;
+                break;
+            }
+        }
         _shrink(elapsed);
     }
 

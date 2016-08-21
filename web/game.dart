@@ -12,7 +12,7 @@ part 'mouse.dart';
 
 part 'dart.dart';
 
-part 'dart_reloader.dart';
+part 'weapon_module.dart';
 
 part 'target.dart';
 
@@ -27,39 +27,28 @@ part 'particle.dart';
 part 'score_text.dart';
 
 Random rnd = new Random();
+const int canvasWidth = 800,
+    canvasHeight = 600;
 
 class Game {
     final CanvasElement _canvas;
     final Keyboard _keyboard = new Keyboard();
     final Mouse _mouse = new Mouse();
 
-    var scoreText = new ScoreText();
+    ScoreText scoreText = new ScoreText();
 
-    final _dartStartY = 300;
+    TargetSpawner targetSpawner = new TargetSpawner(100, 500);
+    List<Particle> particles = new List<Particle>();
 
-    var targetSpawner = new TargetSpawner(100, 500);
-    var particles = new List<Particle>();
-
-    var _aimArc = new AimArc(40, 300, 50);
-    var _dart;
-    var _targets = new List<Target>();
+    WeaponModule weaponModule = new WeaponModule();
+    List<Target> _targets = new List<Target>();
 
     final gravity = 350;
     final airResistance = 100;
 
-    num _powerCharge = 0;
-    bool _charging = false;
-    num _chargeCap = 1000;
-    num _chargeRate;
-
     int _lastTimestamp = 0;
-    double _x = 400.0;
-    double _y = 300.0;
 
-    Game(this._canvas) {
-        _chargeRate = _chargeCap;
-        _dart = new Dart(40, _dartStartY, 32);
-    }
+    Game(this._canvas);
 
     run() {
         window.requestAnimationFrame(_gameLoop);
@@ -84,16 +73,12 @@ class Game {
     }
 
     void _update(final double elapsed) {
-        if (_keyboard.isPressed(KeyCode.R)) _reset();
-
-        if (_keyboard.isPressed(KeyCode.RIGHT)) _dart.throwDart(500, -100);
-
         while (_mouse.mouseEvents.isNotEmpty) {
             var mouseKey = _mouse.mouseEvents.removeAt(0);
             _handleMouseKey(mouseKey);
         }
 
-        _dart.update(elapsed, gravity, airResistance);
+        weaponModule.update(elapsed, gravity, airResistance);
 
         for (var particle in particles) {
             particle.update(elapsed);
@@ -110,7 +95,7 @@ class Game {
 
         var indicesToRemove = new List<int>();
         for (int i = 0; i < _targets.length; i++) {
-            _targets[i].update(_dart, elapsed);
+            _targets[i].update(weaponModule.flyingDarts, elapsed);
 
             if (_targets[i].remainingLifetime <= 0 || _targets[i].hit) {
                 indicesToRemove.add(i);
@@ -126,45 +111,26 @@ class Game {
         }
 
         scoreText.update(elapsed);
-
-        if (_charging) {
-            _powerCharge += _chargeRate * elapsed;
-            _powerCharge %= _chargeCap;
-        }
     }
 
-    void _onTargetHit(var target) {
+    void _onTargetHit(Target target) {
         particles = new List.from(particles)
-            ..addAll(getParticlesForTarget(target, _dart));
+            ..addAll(getParticlesForTarget(target, target.hittingDart));
 
-        _dart.onTargetHit();
-        scoreText.onHitTarget(target, _dart);
+        target.hittingDart.onTargetHit();
+        scoreText.onHitTarget(target, target.hittingDart);
     }
 
     void _handleMouseKey(MouseKey k) {
         switch (k) {
             case MouseKey.down:
-                _charging = true;
+                weaponModule.startCharging();
                 break;
             case MouseKey.up:
-                _charging = false;
-
-                var vel = _getDartThrowVelocity();
-                _dart.throwDart(vel[0], vel[1]);
-                _powerCharge = 0;
+                weaponModule.shootDart();
         }
     }
 
-    List<num> _getDartThrowVelocity() {
-        num x = _aimArc.posX - _dart._x;
-        num y = _aimArc.posY - _dart._y;
-
-        return normalize(x, y, len: _powerCharge);
-    }
-
-    void _reset() {
-        _dart = new Dart(40, _dartStartY, 32);
-    }
 
     void _render() {
         final CanvasRenderingContext2D context = _canvas.context2D;
@@ -176,11 +142,7 @@ class Game {
             ..rect(0, 0, 800, 600)
             ..fill();
 
-        context
-            ..beginPath()
-            ..fillStyle = "black"
-            ..arc(_dart._x, _dart._y, _dart._r, 0, PI * 2.0)
-            ..fill();
+        weaponModule.render(context, _mouse.mouseY);
 
         scoreText.render(context);
 
@@ -191,28 +153,9 @@ class Game {
         for (var particle in particles) {
             particle.render(context);
         }
-
-        _aimArc.renderAimAlongArc(_mouse.mouseY, _dartStartY, _canvas.height, context);
-        _renderPowerMeter(context);
     }
 
-    _renderPowerMeter(context) {
-        final powerMeter_x = 30;
-        final powerMeter_y = 550;
-        final powerMeter_w = 100;
-        final powerMeter_h = 30;
 
-        context
-            ..rect(powerMeter_x, powerMeter_y, powerMeter_w, powerMeter_h)
-            ..stroke();
-
-        context
-            ..fillStyle = "black"
-            ..beginPath()
-            ..lineWidth = 4
-            ..rect(powerMeter_x, powerMeter_y, (_powerCharge / _chargeCap) * powerMeter_w, powerMeter_h)
-            ..fill();
-    }
 }
 
 void main() {
