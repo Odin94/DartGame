@@ -2,6 +2,7 @@
 > maybe create walls or sth to bounce off of
 > maybe several levels (e.g. one that requires to use wall-bouncing to get around a blocking wall in the middle)
 > camera shakes
+> fix crash upon hitting a target in the same moment it disappears (probably dividing by zero somewhere)
 
 
 done:
