@@ -35,8 +35,8 @@ class Target {
     }
 
     bool _checkCollision(Dart dart) {
-        num circleDistanceX = (dart._x - _x).abs();
-        num circleDistanceY = (dart._y - _y).abs();
+        num circleDistanceX = (dart._x - (_x + _w / 2)).abs();
+        num circleDistanceY = (dart._y - (_y + _h / 2)).abs();
 
         if (circleDistanceX > (_w / 2 + dart._r)) return false;
         if (circleDistanceY > (_h / 2 + dart._r)) return false;

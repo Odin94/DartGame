@@ -2,19 +2,22 @@
 > maybe create walls or sth to bounce off of
 > maybe several levels (e.g. one that requires to use wall-bouncing to get around a blocking wall in the middle)
 > camera shakes
-> auto-reloading dart
 
 
 done:
 > score counter
 > score above destroyed targets
 > score multiplier when hitting multiple targets
+> auto-reloading dart
+> Fix collision
 
-
-
-idea:
+ideas:
     Turn this into a space shooter with moving background and what not and the targets become enemy spaceships
     that shoot u and u got like health and shit and maybe theres a boss fight but u still only shoot that one ball
-    and theres like lasers and screen shakes and 8bit music
+    and there's like lasers and screen shakes and 8bit music
 
     Maybe even add different darts; like one that reloads faster / flies faster but disintegrates upon hitting a target
+
+    use dartanalyzer
+
+    consider moving the chargeBar into it's own class
