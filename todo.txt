@@ -8,12 +8,15 @@
 > fix crash upon hitting a target in the same moment it disappears (probably dividing by zero somewhere)
 
 
+
 done:
 > score counter
 > score above destroyed targets
 > score multiplier when hitting multiple targets
 > auto-reloading dart
 > Fix collision
+> add walls
+> fix collision again
 
 ideas:
     Turn this into a space shooter with moving background and what not and the targets become enemy spaceships

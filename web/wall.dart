@@ -6,8 +6,14 @@ class Wall {
     Wall(this._x, this._y, this._w, this._h);
 
     void onDartCollision(Dart dart) {
-        // dart is above or below wall
-        if (dart._y + dart._r < _y || dart._y > _y + _h) {
+        // dart is above wall
+        if (dart._y < _y) {
+            dart._y = (_y - dart._r) - 1;
+            dart._velY = -dart._velY * 0.9;
+        }
+        //dart is below wall
+        else if (dart._y > _y + _h) {
+            dart._y = _y + _h + 1 + dart._r;
             dart._velY = -dart._velY * 0.9;
         }
 
