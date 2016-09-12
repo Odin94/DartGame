@@ -35,19 +35,7 @@ class Target {
     }
 
     bool _checkCollision(Dart dart) {
-        num circleDistanceX = (dart._x - (_x + _w / 2)).abs();
-        num circleDistanceY = (dart._y - (_y + _h / 2)).abs();
-
-        if (circleDistanceX > (_w / 2 + dart._r)) return false;
-        if (circleDistanceY > (_h / 2 + dart._r)) return false;
-
-        if (circleDistanceX <= (_w / 2)) return true;
-        if (circleDistanceY <= (_h / 2)) return true;
-
-        num cornerDistanceSq = (circleDistanceX - _w / 2) +
-            (circleDistanceY - _h / 2) * (circleDistanceY - _h / 2);
-
-        return (cornerDistanceSq <= (dart._r * dart._r));
+        return circleRectangleCollision(dart, this);
     }
 
     void _shrink(num elapsed) {

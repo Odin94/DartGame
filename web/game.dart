@@ -26,6 +26,10 @@ part 'particle.dart';
 
 part 'score_text.dart';
 
+part 'wall.dart';
+
+part 'utils.dart';
+
 Random rnd = new Random();
 const int canvasWidth = 800,
     canvasHeight = 600;
@@ -43,15 +47,26 @@ class Game {
     WeaponModule weaponModule = new WeaponModule();
     List<Target> _targets = new List<Target>();
 
+    List<Wall> _walls = new List<Wall>();
+
     final gravity = 350;
-    final airResistance = 100;
+    final airResistance = .25;
 
     int _lastTimestamp = 0;
 
     Game(this._canvas);
 
     run() {
+        _init();
         window.requestAnimationFrame(_gameLoop);
+    }
+
+    void _init() {
+        _walls.add(new Wall(500, 25, 200, 50));
+        _walls.add(new Wall(50, 25, 200, 50));
+
+        _walls.add(new Wall(100, 500, 200, 50));
+        _walls.add(new Wall(600, 300, 50, 250));
     }
 
     void _gameLoop(final double _) {
@@ -88,6 +103,8 @@ class Game {
                 particles.removeAt(i);
             }
         }
+
+        weaponModule.handleWallCollisions(_walls);
 
         // Spawn new targets; is creating a new list every time too inefficient?
         _targets = new List.from(_targets)
@@ -152,6 +169,10 @@ class Game {
 
         for (var particle in particles) {
             particle.render(context);
+        }
+
+        for (var wall in _walls) {
+            wall.render(context);
         }
     }
 

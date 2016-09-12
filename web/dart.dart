@@ -54,8 +54,7 @@ class Dart {
     }
 
     void _updateVelocity(num elapsed, num gravity, num airResistance) {
-        _velX -= airResistance * elapsed;
-        if (_velX < 0) _velX = 0;
+        _velX = _velX * (1 - airResistance * elapsed);
 
         _velY += gravity * elapsed;
     }

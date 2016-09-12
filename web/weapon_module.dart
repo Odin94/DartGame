@@ -33,6 +33,16 @@ class WeaponModule {
         _manageReloading(elapsed);
     }
 
+    void handleWallCollisions(List<Wall> walls) {
+        for (Wall wall in walls) {
+            for (Dart dart in flyingDarts) {
+                if (circleRectangleCollision(dart, wall)) {
+                    wall.onDartCollision(dart);
+                }
+            }
+        }
+    }
+
     void _removeOutOfFrameDarts() {
         List<int> indicesToRemove = new List<int>();
         for (int i = 0; i < flyingDarts.length; i++) {

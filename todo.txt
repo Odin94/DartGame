@@ -1,7 +1,11 @@
 > make particle direction depend on angle of impact dart->target instead of just dart direction
-> maybe create walls or sth to bounce off of
 > maybe several levels (e.g. one that requires to use wall-bouncing to get around a blocking wall in the middle)
 > camera shakes
+> prevent targets from spawning inside walls
+> make particles stick to walls if they hit them (just stop moving and don't let them despawn)
+> fix crashing when hitting a target that is about to vanish (probably contains division by 0 somewhere)
+> make different darts collide
+> prevent mid-air darts from getting smaller when a new dart is loaded
 
 
 done:
