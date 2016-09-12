@@ -3,9 +3,9 @@
 > camera shakes
 > prevent targets from spawning inside walls
 > make particles stick to walls if they hit them (just stop moving and don't let them despawn)
-> fix crashing when hitting a target that is about to vanish (probably contains division by 0 somewhere)
 > make different darts collide
 > prevent mid-air darts from getting smaller when a new dart is loaded
+> fix crash upon hitting a target in the same moment it disappears (probably dividing by zero somewhere)
 
 
 done:
