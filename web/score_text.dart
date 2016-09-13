@@ -2,7 +2,7 @@ part of game;
 
 class ScoreText {
     num score = 0;
-    var popupScores = new List<String>();
+    List<PopupScore> popupScores = new List<PopupScore>();
 
     void onHitTarget(Target target, Dart dart) {
         num gainedScore = 800 + rnd.nextInt(1200 - 800);
@@ -35,6 +35,10 @@ class ScoreText {
             num j = indicesToRemove[i];
             popupScores.removeAt(j);
         }
+    }
+
+    void wipePopupScores() {
+        popupScores = new List<String>();
     }
 
     void render(var context) {

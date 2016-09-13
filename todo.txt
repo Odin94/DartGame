@@ -6,8 +6,9 @@
 > make different darts collide
 > prevent mid-air darts from getting smaller when a new dart is loaded
 > fix crash upon hitting a target in the same moment it disappears (probably dividing by zero somewhere)
+> make the window bigger
 
-
+> fix collision.. again.. :(   (bullets get stuck at wall..)
 
 done:
 > score counter

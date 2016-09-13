@@ -41,7 +41,7 @@ class Game {
 
     ScoreText scoreText = new ScoreText();
 
-    TargetSpawner targetSpawner = new TargetSpawner(100, 500);
+    TargetSpawner targetSpawner;
     List<Particle> particles = new List<Particle>();
 
     WeaponModule weaponModule = new WeaponModule();
@@ -49,8 +49,8 @@ class Game {
 
     List<Wall> _walls = new List<Wall>();
 
-    final gravity = 350;
-    final airResistance = .25;
+    num gravity;
+    num airResistance;
 
     int _lastTimestamp = 0;
 
@@ -61,7 +61,27 @@ class Game {
         window.requestAnimationFrame(_gameLoop);
     }
 
+    // init the level; let this method be called by a level-manager thingy with
+    // different arguments to set different levels
     void _init() {
+        gravity = 350;
+        airResistance = .25;
+
+        targetSpawner = new TargetSpawner(100, 500);
+        spawnWalls();
+    }
+
+    // clear level, reset everything
+    void _wipe() {
+        _targets = new List<Target>();
+        _walls = new List<Wall>();
+        particles = new List<Particle>();
+        scoreText.wipePopupScores();
+        _lastTimestamp = 0;
+    }
+
+    void spawnWalls() {
+        // TODO: move this in a separate class or sth
         _walls.add(new Wall(500, 25, 200, 50));
         _walls.add(new Wall(50, 25, 200, 50));
 
