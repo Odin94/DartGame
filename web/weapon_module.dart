@@ -22,6 +22,11 @@ class WeaponModule {
         _chargeRate = _chargeCap;
     }
 
+    void wipe() {
+        flyingDarts = new List<Dart>();
+        _reload();
+    }
+
     void update(num elapsed, num gravity, num airResistance) {
         for (Dart dart in flyingDarts) {
             dart.update(elapsed, gravity, airResistance);

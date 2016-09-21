@@ -1,6 +1,6 @@
 part of game;
 
-class ScoreText {
+class ScoreCounter {
     num score = 0;
     List<PopupScore> popupScores = new List<PopupScore>();
 
@@ -38,7 +38,7 @@ class ScoreText {
     }
 
     void wipePopupScores() {
-        popupScores = new List<String>();
+        popupScores = new List<PopupScore>();
     }
 
     void render(var context) {

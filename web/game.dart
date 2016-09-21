@@ -24,7 +24,7 @@ part 'target_spawner.dart';
 
 part 'particle.dart';
 
-part 'score_text.dart';
+part 'score_counter.dart';
 
 part 'wall.dart';
 
@@ -39,7 +39,7 @@ class Game {
     final Keyboard _keyboard = new Keyboard();
     final Mouse _mouse = new Mouse();
 
-    ScoreText scoreText = new ScoreText();
+    ScoreCounter scoreCounter = new ScoreCounter();
 
     TargetSpawner targetSpawner;
     List<Particle> particles = new List<Particle>();
@@ -54,6 +54,8 @@ class Game {
 
     int _lastTimestamp = 0;
 
+    num requiredScore;
+
     Game(this._canvas);
 
     run() {
@@ -64,6 +66,8 @@ class Game {
     // init the level; let this method be called by a level-manager thingy with
     // different arguments to set different levels
     void _init() {
+        requiredScore = 10000 + scoreCounter.score; // keep old score but require new score to be reached independently
+
         gravity = 350;
         airResistance = .25;
 
@@ -71,12 +75,20 @@ class Game {
         spawnWalls();
     }
 
+    void loadNextLevel(String levelname) {
+        window.alert("new level!!");
+
+        _wipe();
+        _init(); //TODO: call init with the level file
+    }
+
     // clear level, reset everything
     void _wipe() {
         _targets = new List<Target>();
         _walls = new List<Wall>();
-        particles = new List<Particle>();
-        scoreText.wipePopupScores();
+        // particles = new List<Particle>();  //don't reset particles cuz it looks cooler this way
+        scoreCounter.wipePopupScores();
+        weaponModule.wipe();
         _lastTimestamp = 0;
     }
 
@@ -108,12 +120,17 @@ class Game {
     }
 
     void _update(final double elapsed) {
+        if(scoreCounter.score > requiredScore) {
+            loadNextLevel("levelname placeholder");
+        }
+
         while (_mouse.mouseEvents.isNotEmpty) {
             var mouseKey = _mouse.mouseEvents.removeAt(0);
             _handleMouseKey(mouseKey);
         }
 
         weaponModule.update(elapsed, gravity, airResistance);
+        weaponModule.handleWallCollisions(_walls);
 
         for (var particle in particles) {
             particle.update(elapsed);
@@ -123,8 +140,6 @@ class Game {
                 particles.removeAt(i);
             }
         }
-
-        weaponModule.handleWallCollisions(_walls);
 
         // Spawn new targets; is creating a new list every time too inefficient?
         _targets = new List.from(_targets)
@@ -147,7 +162,7 @@ class Game {
             _targets.removeAt(j);
         }
 
-        scoreText.update(elapsed);
+        scoreCounter.update(elapsed);
     }
 
     void _onTargetHit(Target target) {
@@ -155,7 +170,7 @@ class Game {
             ..addAll(getParticlesForTarget(target, target.hittingDart));
 
         target.hittingDart.onTargetHit();
-        scoreText.onHitTarget(target, target.hittingDart);
+        scoreCounter.onHitTarget(target, target.hittingDart);
     }
 
     void _handleMouseKey(MouseKey k) {
@@ -181,7 +196,7 @@ class Game {
 
         weaponModule.render(context, _mouse.mouseY);
 
-        scoreText.render(context);
+        scoreCounter.render(context);
 
         for (var target in _targets) {
             target.render(context);

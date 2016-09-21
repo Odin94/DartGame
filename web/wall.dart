@@ -17,8 +17,14 @@ class Wall {
             dart._velY = -dart._velY * 0.9;
         }
 
-        //dart is to the right or left of wall
-        else if (dart._x < _x || dart._x + dart._r > _x + _w) {
+        //dart is to the left of the wall
+        else if (dart._x < _x) {
+            dart._x = (_x - dart._r) - 1;
+            dart._velX = -dart._velX * 0.9;
+        }
+        //dart is to the right of the wall
+        else if (dart._x > _x + _w) {
+            dart._x = _x + _w + 1 + dart._r;
             dart._velX = -dart._velX * 0.9;
         }
     }
