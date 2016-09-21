@@ -48,6 +48,34 @@ class WeaponModule {
         }
     }
 
+    void handleDartDartCollisions(num elapsed) {
+        for (Dart firstDart in flyingDarts) {
+            for (Dart secondDart in flyingDarts) {
+                if (identical(firstDart, secondDart)) {
+                    continue;
+                }
+
+                if (circleCircleCollision(firstDart, secondDart)) {
+                    firstDart._velX = elasticCircleCollisionGetNewSpeed(firstDart._velX, secondDart._velX);
+                    firstDart._velY = elasticCircleCollisionGetNewSpeed(firstDart._velY, secondDart._velY);
+
+                    secondDart._velX = elasticCircleCollisionGetNewSpeed(secondDart._velX, firstDart._velX);
+                    secondDart._velY = elasticCircleCollisionGetNewSpeed(secondDart._velY, firstDart._velY);
+
+                    // separate the darts
+                    num deltaX = firstDart._x - secondDart._x;
+                    num deltaY = firstDart._y - secondDart._y;
+
+                    firstDart._x += deltaX / 4;
+                    firstDart._y += deltaY / 4;
+
+                    secondDart._x -= deltaX / 4;
+                    secondDart._y -= deltaY / 4;
+                }
+            }
+        }
+    }
+
     void _removeOutOfFrameDarts() {
         List<int> indicesToRemove = new List<int>();
         for (int i = 0; i < flyingDarts.length; i++) {

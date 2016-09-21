@@ -18,3 +18,35 @@ bool circleRectangleCollision(circle, rectangle) {
 
     return (cornerDistanceSq <= (circle._r * circle._r));
 }
+
+bool circleCircleCollision(firstCircle, secondCircle) {
+    // check rectangle collision first for efficiency
+    if (!(firstCircle._x + firstCircle._r + secondCircle._r > secondCircle._x
+        && firstCircle._x < secondCircle._x + firstCircle._r + secondCircle._r
+        && firstCircle._y + firstCircle._r + secondCircle._r > secondCircle._y
+        && firstCircle._y < secondCircle._y + firstCircle._r + secondCircle._r)) {
+        return false;
+    }
+
+    num distance = sqrt(((firstCircle._x - secondCircle._x) * (firstCircle._x - secondCircle._x)) +
+        ((firstCircle._y - secondCircle._y) * (firstCircle._y - secondCircle._y)));
+
+    return distance < firstCircle._r + secondCircle._r;
+}
+
+List<num> getCircleCollisionPoint(firstCircle, secondCircle) {
+    num collisionPointX =
+        ((firstCircle._x * secondCircle._r) + (secondCircle._x * firstCircle._r))
+            / (firstCircle._r + secondCircle._r);
+
+    num collisionPointY =
+        ((firstCircle._y * secondCircle._r) + (secondCircle._y * firstCircle._r))
+            / (firstCircle._r + secondCircle._r);
+
+    return [collisionPointX, collisionPointY];
+}
+
+num elasticCircleCollisionGetNewSpeed(firstCircleSpeed, secondCircleSpeed, {firstCircleMass: 1, secondCircleMass: 1}) {
+    return (firstCircleSpeed * (firstCircleMass - secondCircleMass) +
+        (2 * secondCircleMass * secondCircleSpeed)) / (firstCircleMass + secondCircleMass);
+}

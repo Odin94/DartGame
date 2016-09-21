@@ -68,7 +68,7 @@ class Game {
     void _init() {
         requiredScore = 10000 + scoreCounter.score; // keep old score but require new score to be reached independently
 
-        gravity = 350;
+        gravity = 0;//350;
         airResistance = .25;
 
         targetSpawner = new TargetSpawner(100, 500);
@@ -131,6 +131,7 @@ class Game {
 
         weaponModule.update(elapsed, gravity, airResistance);
         weaponModule.handleWallCollisions(_walls);
+        weaponModule.handleDartDartCollisions(elapsed);
 
         for (var particle in particles) {
             particle.update(elapsed);
