@@ -5,7 +5,6 @@ import 'dart:math';
 import 'dart:async';
 import 'dart:collection';
 
-
 part 'keyboard.dart';
 
 part 'mouse.dart';
@@ -30,6 +29,8 @@ part 'wall.dart';
 
 part 'utils.dart';
 
+part 'level_data.dart';
+
 Random rnd = new Random();
 const int canvasWidth = 800,
     canvasHeight = 600;
@@ -38,6 +39,9 @@ class Game {
     final CanvasElement _canvas;
     final Keyboard _keyboard = new Keyboard();
     final Mouse _mouse = new Mouse();
+
+    List<LevelData> levels = getLevelData();
+    int currentLevel = 0;
 
     ScoreCounter scoreCounter = new ScoreCounter();
 
@@ -59,27 +63,32 @@ class Game {
     Game(this._canvas);
 
     run() {
-        _init();
+        _init(levels[currentLevel]);
         window.requestAnimationFrame(_gameLoop);
     }
 
     // init the level; let this method be called by a level-manager thingy with
     // different arguments to set different levels
-    void _init() {
-        requiredScore = 10000 + scoreCounter.score; // keep old score but require new score to be reached independently
+    void _init(LevelData level) {
+        requiredScore = level.requiredScore + scoreCounter.score; // keep old score but require new score to be reached independently
 
-        gravity = 0;//350;
-        airResistance = .25;
+        gravity = level.gravity;
+        airResistance = level.airResistance;
 
-        targetSpawner = new TargetSpawner(100, 500);
-        spawnWalls();
+        targetSpawner = level.targetSpawner;
+        _walls = level.walls;
     }
 
     void loadNextLevel(String levelname) {
         window.alert("new level!!");
 
         _wipe();
-        _init(); //TODO: call init with the level file
+
+        currentLevel += 1;
+        if(currentLevel >= levels.length) {
+            currentLevel -= 1;
+        }
+        _init(levels[currentLevel]);
     }
 
     // clear level, reset everything
@@ -90,15 +99,6 @@ class Game {
         scoreCounter.wipePopupScores();
         weaponModule.wipe();
         _lastTimestamp = 0;
-    }
-
-    void spawnWalls() {
-        // TODO: move this in a separate class or sth
-        _walls.add(new Wall(500, 25, 200, 50));
-        _walls.add(new Wall(50, 25, 200, 50));
-
-        _walls.add(new Wall(100, 500, 200, 50));
-        _walls.add(new Wall(600, 300, 50, 250));
     }
 
     void _gameLoop(final double _) {
@@ -120,7 +120,7 @@ class Game {
     }
 
     void _update(final double elapsed) {
-        if(scoreCounter.score > requiredScore) {
+        if (scoreCounter.score > requiredScore) {
             loadNextLevel("levelname placeholder");
         }
 
@@ -217,7 +217,6 @@ class Game {
 
 void main() {
     final CanvasElement canvas = querySelector("#area");
-
     // turns focus away from address bar and towards the canvas
     canvas.focus();
     scheduleMicrotask(new Game(canvas).run);

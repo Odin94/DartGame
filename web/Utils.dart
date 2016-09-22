@@ -1,5 +1,6 @@
 part of game;
 
+
 bool circleRectangleCollision(circle, rectangle) {
     num rectCenterX = rectangle._x + rectangle._w / 2;
     num rectCenterY = rectangle._y + rectangle._h / 2;

@@ -5,6 +5,7 @@ class TargetSpawner {
     num _maxX, _maxY;
 
     num _minX = 400;
+    num _minY = 50;
 
     num _minW = 30,
         _maxW = 100,
@@ -47,7 +48,7 @@ class TargetSpawner {
         num targetH = _minH + rnd.nextInt(_maxH - _minH);
 
         num targetX = _minX + rnd.nextInt(_maxX - _minX) - targetW;
-        num targetY = rnd.nextInt(_maxY) - targetH;
+        num targetY = _minY + rnd.nextInt(_maxY - _minY) - targetH;
 
         num lifetime = _minLifetime + rnd.nextInt(_maxLifetime);
         return new Target(targetX, targetY, targetW, targetH, lifetime);
