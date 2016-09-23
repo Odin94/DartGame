@@ -35,7 +35,7 @@ class Target {
     }
 
     bool _checkCollision(Dart dart) {
-        return circleRectangleCollision(dart, this);
+        return circleRectCollision(dart, this);
     }
 
     void _shrink(num elapsed) {

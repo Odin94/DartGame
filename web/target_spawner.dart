@@ -17,7 +17,7 @@ class TargetSpawner {
 
     num _accumulator = 0;
     num _currentSpawnDelay;
-    
+
     TargetSpawner(this._minSpawnDelay, this._maxSpawnDelay, {maxX: 800, maxY: 600}) {
         _generateSpawnDelay();
 
@@ -29,18 +29,39 @@ class TargetSpawner {
         _currentSpawnDelay = _minSpawnDelay + rnd.nextInt(_maxSpawnDelay - _minSpawnDelay);
     }
 
-    List<Target> spawnTargetsIfTime(num elapsed) {
+    List<Target> spawnTargetsIfTime(num elapsed, List<Wall> walls) {
         var targetList = new List<Target>();
         _accumulator += elapsed * 100;
 
         while (_accumulator - _currentSpawnDelay >= 0) {
             _accumulator -= _currentSpawnDelay;
 
-            targetList.add(_generateTarget());
+            Target newTarget = _generateTarget();
+            num i = 0;
+            while (_targetCollidesWithWall(newTarget, walls)) {
+                newTarget = _generateTarget();
+
+                i++;
+                if (i > 50) {
+                    print("Can't seem to find an empty spot to spawn the target! Too many walls!");
+                    continue;
+                }
+            }
+
+            targetList.add(newTarget);
             _generateSpawnDelay();
         }
 
         return targetList;
+    }
+
+    bool _targetCollidesWithWall(Target target, List<Wall> walls) {
+        for (Wall wall in walls) {
+            if (rectRectCollision(wall, target)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     Target _generateTarget() {

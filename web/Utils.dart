@@ -1,7 +1,7 @@
 part of game;
 
 
-bool circleRectangleCollision(circle, rectangle) {
+bool circleRectCollision(circle, rectangle) {
     num rectCenterX = rectangle._x + rectangle._w / 2;
     num rectCenterY = rectangle._y + rectangle._h / 2;
 
@@ -50,4 +50,11 @@ List<num> getCircleCollisionPoint(firstCircle, secondCircle) {
 num elasticCircleCollisionGetNewSpeed(firstCircleSpeed, secondCircleSpeed, {firstCircleMass: 1, secondCircleMass: 1}) {
     return (firstCircleSpeed * (firstCircleMass - secondCircleMass) +
         (2 * secondCircleMass * secondCircleSpeed)) / (firstCircleMass + secondCircleMass);
+}
+
+bool rectRectCollision(firstRect, secondRect) {
+    return (firstRect._x < secondRect._x + secondRect._w &&
+        firstRect._x + firstRect._w > secondRect._x &&
+        firstRect._y < secondRect._y + secondRect._h &&
+        firstRect._h + firstRect._y > secondRect._y);
 }

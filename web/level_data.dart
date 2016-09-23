@@ -22,8 +22,7 @@ List<LevelData> getLevelData() {
 
 LevelData loadLevel1() {
     List<Wall> walls = new List();
-    walls.add(new Wall(500, 25, 200, 50));
-    walls.add(new Wall(50, 25, 200, 50));
+    walls.add(new Wall(200, 25, 400, 50));
     walls.add(new Wall(100, 500, 200, 50));
     walls.add(new Wall(600, 300, 50, 250));
 

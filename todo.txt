@@ -1,13 +1,17 @@
 > make particle direction depend on angle of impact dart->target instead of just dart direction
 > camera shakes
-> prevent targets from spawning inside walls
 > make particles stick to walls if they hit them (just stop moving and don't let them despawn)
 > prevent mid-air darts from getting smaller when a new dart is loaded
 > fix crash upon hitting a target in the same moment it disappears (probably dividing by zero somewhere)
 > make the window bigger
 > add fancy level transition
 > make the weapon-thingy movable (so you can shoot darts starting from the middle of the screen or sth)
+> more wall types (e.g. bouncy-walls)
 
+
+refactor:
+> make all square-shaped objects inherit from a square class and all circle-shaped objects from a circle class?
+    (could also use that to abstract collision; just overload a 'collide' function so 'collide(circle, rect)' does circle-rect collision etc)
 
 done:
 > score counter
@@ -20,6 +24,8 @@ done:
 > fix collision.. again.. :(   (bullets get stuck at wall..)
 > make different darts collide
 > maybe several levels (e.g. one that requires to use wall-bouncing to get around a blocking wall in the middle)
+> prevent targets from spawning inside walls
+
 
 
 ideas:

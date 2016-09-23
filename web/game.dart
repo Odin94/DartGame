@@ -144,7 +144,7 @@ class Game {
 
         // Spawn new targets; is creating a new list every time too inefficient?
         _targets = new List.from(_targets)
-            ..addAll(targetSpawner.spawnTargetsIfTime(elapsed));
+            ..addAll(targetSpawner.spawnTargetsIfTime(elapsed, _walls));
 
         var indicesToRemove = new List<int>();
         for (int i = 0; i < _targets.length; i++) {

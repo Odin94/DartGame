@@ -41,7 +41,7 @@ class WeaponModule {
     void handleWallCollisions(List<Wall> walls) {
         for (Wall wall in walls) {
             for (Dart dart in flyingDarts) {
-                if (circleRectangleCollision(dart, wall)) {
+                if (circleRectCollision(dart, wall)) {
                     wall.onDartCollision(dart);
                 }
             }
