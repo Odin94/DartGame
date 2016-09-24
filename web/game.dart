@@ -47,6 +47,7 @@ class Game {
 
     TargetSpawner targetSpawner;
     List<Particle> particles = new List<Particle>();
+    List<Particle> permanentParticles = new List<Particle>();
 
     WeaponModule weaponModule = new WeaponModule();
     List<Target> _targets = new List<Target>();
@@ -70,7 +71,8 @@ class Game {
     // init the level; let this method be called by a level-manager thingy with
     // different arguments to set different levels
     void _init(LevelData level) {
-        requiredScore = level.requiredScore + scoreCounter.score; // keep old score but require new score to be reached independently
+        requiredScore = level.requiredScore +
+            scoreCounter.score; // keep old score but require new score to be reached independently
 
         gravity = level.gravity;
         airResistance = level.airResistance;
@@ -79,13 +81,13 @@ class Game {
         _walls = level.walls;
     }
 
-    void loadNextLevel(String levelname) {
+    void loadNextLevel() {
         window.alert("new level!!");
 
         _wipe();
 
         currentLevel += 1;
-        if(currentLevel >= levels.length) {
+        if (currentLevel >= levels.length) {
             currentLevel -= 1;
         }
         _init(levels[currentLevel]);
@@ -96,6 +98,7 @@ class Game {
         _targets = new List<Target>();
         _walls = new List<Wall>();
         // particles = new List<Particle>();  //don't reset particles cuz it looks cooler this way
+        permanentParticles = new List<Particle>();
         scoreCounter.wipePopupScores();
         weaponModule.wipe();
         _lastTimestamp = 0;
@@ -121,7 +124,7 @@ class Game {
 
     void _update(final double elapsed) {
         if (scoreCounter.score > requiredScore) {
-            loadNextLevel("levelname placeholder");
+            loadNextLevel();
         }
 
         while (_mouse.mouseEvents.isNotEmpty) {
@@ -135,6 +138,12 @@ class Game {
 
         for (var particle in particles) {
             particle.update(elapsed);
+            for (var wall in _walls) {
+                if (rectRectCollision(particle, wall)) {
+                    permanentParticles.add(particle.clone());
+                    particle.outOfScreen = true; // not really out of screen, just want to remove it :x bad idea
+                }
+            }
         }
         for (int i = particles.length - 1; i >= 0; i--) {
             if (particles[i].outOfScreen) {
@@ -204,6 +213,10 @@ class Game {
         }
 
         for (var particle in particles) {
+            particle.render(context);
+        }
+
+        for (var particle in permanentParticles) {
             particle.render(context);
         }
 

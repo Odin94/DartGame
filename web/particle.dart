@@ -28,7 +28,7 @@ List<Particle> getParticlesForTarget(Target target, Dart dart) {
 }
 
 class Particle {
-    num _x, _y, _velX, _velY, _size;
+    num _x, _y, _w, _h, _velX, _velY, _size;
     bool outOfScreen = false;
 
     Particle(num minX, num maxX, num minY, num maxY,
@@ -40,6 +40,25 @@ class Particle {
         _velY = minParticleVelY + rnd.nextInt(maxParticleVelY - minParticleVelY);
 
         _size = 1 + rnd.nextInt(_maxParticleSize - 1);
+        _w = _size;
+        _h = _size;
+    }
+
+    Particle clone() {
+        window.alert("1");
+        Particle cloned = new Particle(5, 10, 5, 10);
+
+        cloned._x = this._x;
+        cloned._y = this._y;
+        cloned._velX = 0;
+        cloned._velY = 0;
+        cloned._size = this._size;
+
+        cloned._w = this._size;
+        cloned._h = this._size;
+
+
+        return cloned;
     }
 
     void update(num elapsed) {
