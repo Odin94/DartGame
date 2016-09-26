@@ -23,7 +23,7 @@ List<LevelData> getLevelData() {
 LevelData loadLevel1() {
     List<Wall> walls = new List();
     walls.add(new Wall(200, 25, 400, 50));
-    walls.add(new Wall(100, 500, 200, 50));
+    walls.add(new BouncyWall(100, 500, 200, 50));
     walls.add(new Wall(600, 300, 50, 250));
 
     return new LevelData(3000, new TargetSpawner(100, 500, maxX: 600, maxY: 500), walls);
@@ -32,7 +32,7 @@ LevelData loadLevel1() {
 LevelData loadLevel2() {
     List<Wall> walls = new List();
 
-    walls.add(new Wall(725, 100, 50, 450));
+    walls.add(new InverterWall(725, 100, 50, 450));
 
     return new LevelData(10000, new TargetSpawner(100, 500, maxX: 550, maxY: 300), walls);
 }

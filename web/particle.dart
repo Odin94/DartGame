@@ -45,7 +45,6 @@ class Particle {
     }
 
     Particle clone() {
-        window.alert("1");
         Particle cloned = new Particle(5, 10, 5, 10);
 
         cloned._x = this._x;

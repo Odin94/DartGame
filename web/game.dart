@@ -31,6 +31,10 @@ part 'utils.dart';
 
 part 'level_data.dart';
 
+part 'bouncy_wall.dart';
+
+part 'inverter_wall.dart';
+
 Random rnd = new Random();
 const int canvasWidth = 800,
     canvasHeight = 600;
