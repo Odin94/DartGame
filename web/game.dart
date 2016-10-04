@@ -58,6 +58,12 @@ class Game {
 
     List<Wall> _walls = new List<Wall>();
 
+    num screenShakeMaxX = 0,
+        screenShakeMaxY = 0,
+        screenShakeX = 0,
+        screenShakeY = 0,
+        screenShakeDuration = 0;
+
     num gravity;
     num airResistance;
 
@@ -75,6 +81,8 @@ class Game {
     // init the level; let this method be called by a level-manager thingy with
     // different arguments to set different levels
     void _init(LevelData level) {
+        startScreenShake(5);
+
         requiredScore = level.requiredScore +
             scoreCounter.score; // keep old score but require new score to be reached independently
 
@@ -106,6 +114,8 @@ class Game {
         scoreCounter.wipePopupScores();
         weaponModule.wipe();
         _lastTimestamp = 0;
+
+        screenShakeDuration = 0;
     }
 
     void _gameLoop(final double _) {
@@ -127,6 +137,8 @@ class Game {
     }
 
     void _update(final double elapsed) {
+        updateScreenShake(elapsed);
+
         if (scoreCounter.score > requiredScore) {
             loadNextLevel();
         }
@@ -197,6 +209,30 @@ class Game {
         }
     }
 
+    void startScreenShake(num xIntensity, {num yIntensity: null, num duration: 1}) {
+        if (yIntensity == null) yIntensity = xIntensity;
+
+        screenShakeDuration += duration;
+        screenShakeMaxX += xIntensity;
+        screenShakeMaxY += yIntensity;
+    }
+
+    void updateScreenShake(num elapsed) {
+        screenShakeDuration -= elapsed;
+        if (screenShakeDuration <= 0) {
+            screenShakeDuration = 0;
+            screenShakeMaxX = 0;
+            screenShakeMaxY = 0;
+
+            screenShakeX = 0;
+            screenShakeY = 0;
+        }
+        else {
+            screenShakeX = -screenShakeMaxX + rnd.nextInt(screenShakeMaxX * 2);
+            screenShakeY = -screenShakeMaxY + rnd.nextInt(screenShakeMaxY * 2);
+        }
+    }
+
 
     void _render() {
         final CanvasRenderingContext2D context = _canvas.context2D;
@@ -208,24 +244,24 @@ class Game {
             ..rect(0, 0, 800, 600)
             ..fill();
 
-        weaponModule.render(context, _mouse.mouseY);
+        weaponModule.render(context, _mouse.mouseY, screenShakeX, screenShakeY);
 
         scoreCounter.render(context);
 
         for (var target in _targets) {
-            target.render(context);
+            target.render(context, screenShakeX, screenShakeY);
         }
 
         for (var particle in particles) {
-            particle.render(context);
+            particle.render(context, screenShakeX, screenShakeY);
         }
 
         for (var particle in permanentParticles) {
-            particle.render(context);
+            particle.render(context, screenShakeX, screenShakeY);
         }
 
         for (var wall in _walls) {
-            wall.render(context);
+            wall.render(context, screenShakeX, screenShakeY);
         }
     }
 

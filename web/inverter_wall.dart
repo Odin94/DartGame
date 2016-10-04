@@ -27,12 +27,12 @@ class InverterWall extends Wall {
         dart._velY = -dart._velY * bounceMultiplier;
     }
 
-    void render(context) {
+    void render(context, num screenShakeX, num screenShakeY) {
         context
             ..globalAlpha = 1
             ..fillStyle = "purple"
             ..beginPath()
-            ..rect(_x, _y, _w, _h)
+            ..rect(_x + screenShakeX, _y + screenShakeY, _w, _h)
             ..fill();
     }
 }

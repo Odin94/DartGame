@@ -69,12 +69,12 @@ class Particle {
         }
     }
 
-    void render(context) {
+    void render(context, num screenShakeX, num screenShakeY) {
         context
             ..globalAlpha = 1
             ..fillStyle = "red"
             ..beginPath()
-            ..rect(_x, _y, _size, _size)
+            ..rect(_x + screenShakeX, _y + screenShakeY, _size, _size)
             ..fill();
     }
 }

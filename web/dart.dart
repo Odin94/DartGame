@@ -59,11 +59,11 @@ class Dart {
         _velY += gravity * elapsed;
     }
 
-    void render(context) {
+    void render(context, num screenShakeX, num screenShakeY) {
         context
             ..beginPath()
             ..fillStyle = "black"
-            ..arc(_x, _y, _r, 0, PI * 2.0)
+            ..arc(_x + screenShakeX, _y + screenShakeY, _r, 0, PI * 2.0)
             ..fill();
     }
 }

@@ -49,12 +49,12 @@ class Target {
         _y = _originalY + (_originalH - _h) / 2;
     }
 
-    void render(context) {
+    void render(context, num screenShakeX, num screenShakeY) {
         context
             ..globalAlpha = 1
             ..fillStyle = "red"
             ..beginPath()
-            ..rect(_x, _y, _w, _h)
+            ..rect(_x + screenShakeX, _y + screenShakeY, _w, _h)
             ..fill();
     }
 }

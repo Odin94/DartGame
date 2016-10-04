@@ -140,15 +140,15 @@ class WeaponModule {
         return normalize(x, y, len: _powerCharge);
     }
 
-    void render(CanvasRenderingContext2D context, mouseY) {
+    void render(CanvasRenderingContext2D context, mouseY, num screenShakeX, num screenShakeY) {
         aimArc.renderAimAlongArc(mouseY, _dartStartY, context);
 
         for (Dart dart in flyingDarts) {
-            dart.render(context);
+            dart.render(context, screenShakeX, screenShakeY);
         }
 
         if (loadedDart != null) {
-            loadedDart.render(context);
+            loadedDart.render(context, 0, 0);
         }
 
         _renderPowerMeter(context);
