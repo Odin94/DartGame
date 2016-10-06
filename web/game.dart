@@ -64,6 +64,10 @@ class Game {
         screenShakeY = 0,
         screenShakeDuration = 0;
 
+    num levelTransitionCutsceneDuration = 3;
+    num levelTransitionDurationAcc = 0;
+    bool inLevelTransition = false;
+
     num gravity;
     num airResistance;
 
@@ -93,9 +97,27 @@ class Game {
         _walls = level.walls;
     }
 
-    void loadNextLevel() {
-        window.alert("new level!!");
+    void playLevelTransitionCutscene(num elapsed) {
+        levelTransitionDurationAcc += elapsed;
+        updateScreenShake(elapsed);
 
+        _render();
+
+        _canvas.context2D
+            ..fillStyle = "black"
+            ..font = "64px consolas"
+            ..fillText("Level $currentLevel completed!", 100, 200);
+
+        if (levelTransitionDurationAcc >= levelTransitionCutsceneDuration) {
+            loadNextLevel();
+        }
+    }
+
+    void startLevelTransition() {
+        inLevelTransition = true;
+    }
+
+    void loadNextLevel() {
         _wipe();
 
         currentLevel += 1;
@@ -103,6 +125,8 @@ class Game {
             currentLevel -= 1;
         }
         _init(levels[currentLevel]);
+
+        inLevelTransition = false;
     }
 
     // clear level, reset everything
@@ -116,11 +140,23 @@ class Game {
         _lastTimestamp = 0;
 
         screenShakeDuration = 0;
+        levelTransitionDurationAcc = 0;
+    }
+
+    void playGameLoop(num elapsed) {
+        _update(elapsed);
+        _render();
     }
 
     void _gameLoop(final double _) {
-        _update(_getElapsed());
-        _render();
+        num elapsed = _getElapsed();
+        if(inLevelTransition) {
+            playLevelTransitionCutscene(elapsed);
+        }
+        else {
+            playGameLoop(elapsed);
+        }
+
         window.requestAnimationFrame(_gameLoop);
     }
 
@@ -140,7 +176,7 @@ class Game {
         updateScreenShake(elapsed);
 
         if (scoreCounter.score > requiredScore) {
-            loadNextLevel();
+            startLevelTransition();
         }
 
         while (_mouse.mouseEvents.isNotEmpty) {

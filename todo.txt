@@ -2,9 +2,11 @@
 > prevent mid-air darts from getting smaller when a new dart is loaded
 > fix crash upon hitting a target in the same moment it disappears (probably dividing by zero somewhere)
 > make the window bigger
-> add fancy level transition
 > make the weapon-thingy movable (so you can shoot darts starting from the middle of the screen or sth)
 > make particles penetrate walls deeper when they hit them or let them create lines or sth
+> add more levels
+> add a slo-mo effect after level transition or where-ever, slo-mo particles look super cool
+    (like maybe do slo-mo and disable controls during transition instead of pausing)
 
 refactor:
 > make all square-shaped objects inherit from a square class and all circle-shaped objects from a circle class?
@@ -26,6 +28,7 @@ done:
 > prevent targets from spawning inside walls
 > make particles stick to walls if they hit them (just stop moving and don't let them despawn)
 > more wall types (e.g. bouncy-walls)
+> add fancy level transition
 
 
 
